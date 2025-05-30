@@ -1,3 +1,4 @@
+using System.Threading;
 using DLS.Graphics;
 using DLS.Simulation;
 using Seb.Helpers;
@@ -71,7 +72,7 @@ namespace DLS.Game
 
 			Main.Init(audioState);
 
-
+			LuaScript.init();
 			if (openInMainMenu || !Application.isEditor) Main.LoadMainMenu();
 			else Main.CreateOrLoadProject(testProjectName, openA ? chipToOpenA : chipToOpenB);
 

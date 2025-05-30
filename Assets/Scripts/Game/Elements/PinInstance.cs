@@ -22,10 +22,12 @@ namespace DLS.Game
 		bool faceRight;
 		public float LocalPosY;
 		public string Name;
+		public PinDescription Description;
 
 
 		public PinInstance(PinDescription desc, PinAddress address, IMoveable parent, bool isSourcePin)
 		{
+			Description = desc;
 			this.parent = parent;
 			bitCount = desc.BitCount;
 			Name = desc.Name;

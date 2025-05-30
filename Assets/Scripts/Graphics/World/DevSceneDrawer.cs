@@ -282,7 +282,7 @@ namespace DLS.Graphics
 
 
 			// Draw pins
-			for (int i = 0; i < subchip.AllPins.Length; i++)
+			for (int i = 0; i < subchip.AllPins.Count; i++)
 			{
 				// Hide input pin on bus origin chips, since player connects to the bus wire instead (input pin is only used behind the scenes)
 				if (i == 0 && ChipTypeHelper.IsBusOriginType(subchip.Description.ChipType)) continue;

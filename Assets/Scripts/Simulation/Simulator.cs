@@ -1,8 +1,12 @@
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Text;
 using DLS.Description;
 using DLS.Game;
+using Newtonsoft.Json.Linq;
+using NLua;
 using Random = System.Random;
 
 namespace DLS.Simulation
@@ -28,6 +32,9 @@ namespace DLS.Simulation
 
 		// Modifications to the sim are made from the main thread, but only applied on the sim thread to avoid conflicts
 		static readonly ConcurrentQueue<SimModifyCommand> modificationQueue = new();
+
+		static Dictionary<int, LuaScript> luaChips = new();
+		public static List<LuaFunction> queuedFuncs = new();
 
 		// ---- Simulation outline ----
 		// 1) Forward the initial player-controlled input states to all connected pins.
@@ -85,6 +92,16 @@ namespace DLS.Simulation
 			else
 			{
 				StepChip(rootSimChip);
+			}
+
+			try
+			{
+				foreach (LuaFunction func in queuedFuncs)
+					func.Call();
+			}
+			catch (Exception e)
+			{
+				UnityEngine.Debug.LogError("Lua error: " + e.Message + '\n' + e.StackTrace);
 			}
 
 			UpdateAudioState();
@@ -506,6 +523,29 @@ namespace DLS.Simulation
 					audioState.RegisterNote(freqIndex, (uint)volumeIndex);
 					break;
 				}
+				case ChipType.Lua:
+				{
+					if (chip.InternalState[0] == 0) break;
+					if (!luaChips.ContainsKey(chip.ID))
+					{	
+						StringBuilder sb = new();
+						for (int i = 0; i < 4194304; i++) {
+							if (chip.InternalState[i] == '\0') break;
+							sb.Append(Convert.ToChar(chip.InternalState[i]));
+						}
+						luaChips[chip.ID] = new LuaScript((string) JObject.Parse(sb.ToString())["script"], false, chip);
+					}
+					try
+					{
+						luaChips[chip.ID].Execute();
+					}
+					catch (Exception e)
+					{
+						UnityEngine.Debug.LogError("Lua error: " + e.Message + '\n' + e.StackTrace);
+					}
+					chip.InternalState[0] = 0;
+					break;
+				}
 				// ---- Bus types ----
 				default:
 				{
@@ -673,6 +713,8 @@ namespace DLS.Simulation
 			modificationQueue?.Clear();
 			stopwatch.Restart();
 			elapsedSecondsOld = 0;
+			queuedFuncs.Clear();
+			luaChips.Clear();
 		}
 
 		struct SimModifyCommand

@@ -70,6 +70,14 @@ namespace DLS.Graphics
 			deleteEntry
 		};
 
+		static readonly MenuEntry[] entries_builtinLuaSubchip =
+		{
+			new(Format("EDIT"), OpenLuaEditMenu, CanEditCurrentChip),
+			new(Format("CONSOLE"), OpenLuaEditMenu, () => true),
+			labelChipEntry,
+			deleteEntry
+		};
+
 		static readonly MenuEntry[] entries_builtinPulseChip =
 		{
 			new(Format("EDIT"), OpenPulseEditMenu, CanEditCurrentChip),
@@ -182,6 +190,7 @@ namespace DLS.Graphics
 							if (subChip.ChipType is ChipType.Key) activeContextMenuEntries = entries_builtinKeySubchip;
 							else if (ChipTypeHelper.IsRomType(subChip.ChipType)) activeContextMenuEntries = entries_builtinRomSubchip;
 							else if (subChip.ChipType is ChipType.Pulse) activeContextMenuEntries = entries_builtinPulseChip;
+							else if (subChip.ChipType is ChipType.Lua) activeContextMenuEntries = entries_builtinLuaSubchip;
 							else if (ChipTypeHelper.IsBusType(subChip.ChipType)) activeContextMenuEntries = entries_builtinBus;
 							else if (subChip.ChipType == ChipType.DisplayLED) activeContextMenuEntries = entries_builtinLED;
 							else activeContextMenuEntries = entries_builtinSubchip;
@@ -400,6 +409,8 @@ namespace DLS.Graphics
 		}
 
 		static void OpenRomEditMenu() => UIDrawer.SetActiveMenu(UIDrawer.MenuType.RomEdit);
+
+		static void OpenLuaEditMenu() => UIDrawer.SetActiveMenu(UIDrawer.MenuType.LuaEdit);
 
 		static void OpenPulseEditMenu() => UIDrawer.SetActiveMenu(UIDrawer.MenuType.PulseEdit);
 

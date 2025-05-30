@@ -51,7 +51,9 @@ namespace DLS.Game
 				CreateBus(PinBitCount.Bit8),
 				CreateBusTerminus(PinBitCount.Bit8),
 				// ---- Audio ----
-				CreateBuzzer()
+				CreateBuzzer(),
+				// ---- Scripted chips ----
+				CreateLuaScript(),
 			};
 		}
 
@@ -64,6 +66,14 @@ namespace DLS.Game
 			PinDescription[] outputPins = { CreatePinDescription("OUT", 2) };
 
 			return CreateBuiltinChipDescription(ChipType.Nand, size, col, inputPins, outputPins);
+		}
+
+		static ChipDescription CreateLuaScript() 
+		{
+			Color col = new(0.1f, 0.1f, 0.1f);
+			Vector2 size = new(CalculateGridSnappedWidth(GridSize * 9), 1);
+			
+			return CreateBuiltinChipDescription(ChipType.Lua, size, col, new PinDescription[0], new PinDescription[0]);
 		}
 
 		static ChipDescription CreateBuzzer()
@@ -419,7 +429,7 @@ namespace DLS.Game
 				PinValueDisplayMode.Off
 			);
 
-		static float CalculateGridSnappedWidth(float desiredWidth) =>
+		public static float CalculateGridSnappedWidth(float desiredWidth) =>
 			// Calculate width such that spacing between an input and output pin on chip will align with grid
 			GridHelper.SnapToGridForceEven(desiredWidth) - (ChipOutlineWidth - 2 * SubChipPinInset);
 

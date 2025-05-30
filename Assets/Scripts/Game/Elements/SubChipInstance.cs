@@ -13,20 +13,20 @@ namespace DLS.Game
 {
 	public class SubChipInstance : IMoveable
 	{
-		public readonly PinInstance[] AllPins;
+		public List<PinInstance> AllPins;
 		public readonly ChipType ChipType;
 		public readonly ChipDescription Description;
 
 		public readonly List<DisplayInstance> Displays;
 		public readonly SubChipDescription InitialSubChipDesc;
-		public readonly PinInstance[] InputPins;
+		public List<PinInstance> InputPins = new();
 
 		public readonly uint[] InternalData;
 		public readonly bool IsBus;
 		public readonly Vector2 MinSize;
 
 		public readonly string MultiLineName;
-		public readonly PinInstance[] OutputPins;
+		public List<PinInstance> OutputPins = new();
 		public string activationKeyString; // input char for the 'key chip' type (stored as string to avoid allocating when drawing)
 		public string Label;
 
@@ -35,6 +35,7 @@ namespace DLS.Game
 			InitialSubChipDesc = subChipDesc;
 			ChipType = description.ChipType;
 			Description = description;
+			Size = description.Size;
 			Position = subChipDesc.Position;
 			ID = subChipDesc.ID;
 			Label = subChipDesc.Label;
@@ -42,9 +43,9 @@ namespace DLS.Game
 			MultiLineName = CreateMultiLineName(description.Name);
 			MinSize = CalculateMinChipSize(description.InputPins, description.OutputPins, description.Name);
 
-			InputPins = CreatePinInstances(description.InputPins, true);
-			OutputPins = CreatePinInstances(description.OutputPins, false);
-			AllPins = InputPins.Concat(OutputPins).ToArray();
+			InputPins = CreatePinInstances(description.InputPins, true).ToList();
+			OutputPins = CreatePinInstances(description.OutputPins, false).ToList();
+			AllPins = InputPins.Concat(OutputPins).ToList();
 			LoadOutputPinColours(subChipDesc.OutputPinColourInfo);
 
 			// Displays
@@ -94,7 +95,7 @@ namespace DLS.Game
 
 		public int LinkedBusPairID => IsBus ? (int)InternalData[0] : -1;
 		public bool BusIsFlipped => IsBus && InternalData.Length > 1 && InternalData[1] == 1;
-		public Vector2 Size => Description.Size;
+		public Vector2 Size { get; set; }
 		public Vector2 Position { get; set; }
 
 		public Vector2 MoveStartPosition { get; set; }
@@ -112,8 +113,8 @@ namespace DLS.Game
 		{
 			get
 			{
-				if (InputPins.Length != 0) return InputPins[0].GetWorldPos();
-				if (OutputPins.Length != 0) return OutputPins[0].GetWorldPos();
+				if (InputPins.Count != 0) return InputPins[0].GetWorldPos();
+				if (OutputPins.Count != 0) return OutputPins[0].GetWorldPos();
 				return Position;
 			}
 		}
@@ -136,8 +137,18 @@ namespace DLS.Game
 
 		public void UpdatePinLayout()
 		{
-			CalculatePinLayout(InputPins);
-			CalculatePinLayout(OutputPins);
+			CalculatePinLayout(InputPins.ToArray());
+			CalculatePinLayout(OutputPins.ToArray());
+		}
+
+		public void ReevaluatePinout() {
+			InputPins.Clear();
+			OutputPins.Clear();
+			foreach (PinInstance pin in AllPins)
+				if (pin.IsSourcePin)
+					OutputPins.Add(pin);
+				else
+					InputPins.Add(pin);
 		}
 
 		void CalculatePinLayout(PinInstance[] pins)
@@ -270,13 +281,13 @@ namespace DLS.Game
 			bool inputsHidden = ChipTypeHelper.IsBusOriginType(ChipType);
 			float flipX = BusIsFlipped ? -1 : 1;
 
-			if (InputPins.Length > 0 && !inputsHidden)
+			if (InputPins.Count > 0 && !inputsHidden)
 			{
 				pinWidthPad += DrawSettings.PinRadius;
 				offsetX -= DrawSettings.PinRadius / 2 * flipX;
 			}
 
-			if (OutputPins.Length > 0)
+			if (OutputPins.Count > 0)
 			{
 				pinWidthPad += DrawSettings.PinRadius;
 				offsetX += DrawSettings.PinRadius / 2 * flipX;

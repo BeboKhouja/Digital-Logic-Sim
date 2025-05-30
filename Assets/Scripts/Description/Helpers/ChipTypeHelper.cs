@@ -33,6 +33,8 @@ namespace DLS.Description
 
 			{ ChipType.Buzzer, "BUZZER" },
 
+			{ ChipType.Lua, "LUA SCRIPT" },
+
 			// ---- Not really chips (but convenient to treat them as such anyway) ----
 
 			// ---- Inputs/Outputs ----

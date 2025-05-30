@@ -17,6 +17,7 @@ namespace DLS.Graphics
 			MainMenu,
 			RebindKeyChip,
 			RomEdit,
+			LuaEdit,
 			PulseEdit,
 			UnsavedChanges,
 			Search,
@@ -64,6 +65,7 @@ namespace DLS.Graphics
 			else if (menuToDraw == MenuType.PinRename) PinEditMenu.DrawMenu();
 			else if (menuToDraw == MenuType.RebindKeyChip) RebindKeyChipMenu.DrawMenu();
 			else if (menuToDraw == MenuType.RomEdit) RomEditMenu.DrawMenu();
+			else if (menuToDraw == MenuType.LuaEdit) LuaEditMenu.DrawMenu();
 			else if (menuToDraw == MenuType.UnsavedChanges) UnsavedChangesPopup.DrawMenu();
 			else if (menuToDraw == MenuType.Search) SearchPopup.DrawMenu();
 			else if (menuToDraw == MenuType.ChipLabelPopup) ChipLabelMenu.DrawMenu();
@@ -95,6 +97,7 @@ namespace DLS.Graphics
 				else if (ActiveMenu == MenuType.MainMenu) MainMenu.OnMenuOpened();
 				else if (ActiveMenu == MenuType.RebindKeyChip) RebindKeyChipMenu.OnMenuOpened();
 				else if (ActiveMenu == MenuType.RomEdit) RomEditMenu.OnMenuOpened();
+				else if (ActiveMenu == MenuType.LuaEdit) LuaEditMenu.OnMenuOpened();
 				else if (ActiveMenu == MenuType.Search) SearchPopup.OnMenuOpened();
 				else if (ActiveMenu == MenuType.ChipLabelPopup) ChipLabelMenu.OnMenuOpened();
 				else if (ActiveMenu == MenuType.PulseEdit) PulseEditMenu.OnMenuOpened();
@@ -127,6 +130,7 @@ namespace DLS.Graphics
 			BottomBarUI.Reset();
 			ChipSaveMenu.Reset();
 			RomEditMenu.Reset();
+			LuaEditMenu.Reset();
 			ChipLibraryMenu.Reset();
 			SearchPopup.Reset();
 		}

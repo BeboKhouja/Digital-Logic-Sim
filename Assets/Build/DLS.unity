@@ -243,9 +243,9 @@ MonoBehaviour:
   openSaveDirectory: 0
   openInMainMenu: 0
   testProjectName: MainTest
-  openA: 1
-  chipToOpenA: BuzzTest
-  chipToOpenB: TEST MergeSplit
+  openA: 0
+  chipToOpenA: LuaTest
+  chipToOpenB: LuaDiv
   testVecA: {x: 100, y: 0.5333334}
   testVecB: {x: 1.71, y: 0.0025}
   testVecC: {x: 1.4, y: 8}

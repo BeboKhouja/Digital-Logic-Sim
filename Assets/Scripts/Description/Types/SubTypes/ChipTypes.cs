@@ -47,7 +47,7 @@ namespace DLS.Description
 		BusTerminus_8Bit,
 		
 		// ---- Audio ----
-		Buzzer
-
-	}
+		Buzzer,
+        Lua,
+    }
 }
