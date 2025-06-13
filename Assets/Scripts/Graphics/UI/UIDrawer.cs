@@ -1,5 +1,6 @@
 using DLS.Game;
 using Seb.Vis.UI;
+using UnityEngine.InputSystem;
 
 namespace DLS.Graphics
 {
@@ -33,6 +34,7 @@ namespace DLS.Graphics
 
 			using (UI.CreateFixedAspectUIScope(drawLetterbox: true))
 			{
+				if (Gamepad.current != null) ControllerUI.DrawUI();
 				if (ActiveMenu is MenuType.MainMenu)
 				{
 					DrawAppMenus();
@@ -128,6 +130,7 @@ namespace DLS.Graphics
 			ChipSaveMenu.Reset();
 			RomEditMenu.Reset();
 			ChipLibraryMenu.Reset();
+			ControllerUI.Reset();
 			SearchPopup.Reset();
 		}
 	}

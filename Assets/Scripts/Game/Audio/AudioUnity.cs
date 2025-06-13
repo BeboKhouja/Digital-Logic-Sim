@@ -34,7 +34,7 @@ public class AudioUnity : MonoBehaviour
         maxRawSampleLastBatch = 0;
         maxProcessedSampleLastBatch = 0;
         
-        
+        if (audioState == null) return; // In the case of an error the log wont be flooded
 		for (int i = 0; i < data.Length; i += numChannels)
 		{
 			float sampleRaw = gain * audioState.Sample(audioTime);

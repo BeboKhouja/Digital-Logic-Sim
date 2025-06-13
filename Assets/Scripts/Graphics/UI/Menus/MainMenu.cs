@@ -32,6 +32,9 @@ namespace DLS.Graphics
 		static readonly Func<string, bool> projectNameValidator = ProjectNameValidator;
 		static readonly UI.ScrollViewDrawContentFunc loadProjectScrollViewDrawer = DrawAllProjectsInScrollView;
 
+		static readonly ControllerButtonDescription[] mainButtons = {
+			new(ButtonType.A, "Select")
+		};
 
 		static readonly string[] menuButtonNames =
 		{
@@ -146,6 +149,8 @@ namespace DLS.Graphics
 			float buttonWidth = 15;
 
 			int buttonIndex = UI.VerticalButtonGroup(menuButtonNames, theme.MainMenuButtonTheme, UI.Centre + Vector2.up * 6, new Vector2(buttonWidth, 0), false, true, 1);
+
+			ControllerUI.SetButtons(mainButtons);
 
 			if (buttonIndex == 0 || KeyboardShortcuts.MainMenu_NewProjectShortcutTriggered) // New project
 			{

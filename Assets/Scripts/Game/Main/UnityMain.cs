@@ -4,6 +4,7 @@ using Seb.Helpers;
 using Seb.Vis;
 using Seb.Vis.UI;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace DLS.Game
 {
@@ -168,6 +169,7 @@ namespace DLS.Game
 		// Ensure static stuff gets properly reset (on account of domain-reloading being disabled in editor)
 		static void ResetStatics()
 		{
+			// TODO: Reset input system
 			Simulator.Reset();
 			UIDrawer.Reset();
 			InteractionState.Reset();
