@@ -241,6 +241,7 @@ namespace DLS.Graphics
 
 		static void RefreshLoadedProjects()
 		{
+			DialogWrapper.ShowDialog("Hal", "AAA", "sias");
 			allProjectDescriptions = Loader.LoadAllProjectDescriptions();
 			allProjectNames = allProjectDescriptions.Select(d => d.ProjectName).ToArray();
 			projectCompatibilities = allProjectDescriptions.Select(d => CanOpenProject(d)).ToArray();
