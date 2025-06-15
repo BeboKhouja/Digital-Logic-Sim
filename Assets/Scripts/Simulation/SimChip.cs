@@ -21,11 +21,21 @@ namespace DLS.Simulation
 		public SimChip[] SubChips = Array.Empty<SimChip>();
 
 
+		/// <summary>
+		/// Creates an empty <c>SimChip</c>.
+		/// </summary>
 		public SimChip()
 		{
 			ID = -1;
 		}
 
+		/// <summary>
+		/// Creates a <c>SimChip</c>.
+		/// </summary>
+		/// <param name="desc">The description to be based on.</param>
+		/// <param name="id">The ID of the chip.</param>
+		/// <param name="internalState">The internal state of the chip.</param>
+		/// <param name="subChips">The subchips for this chip.</param>
 		public SimChip(ChipDescription desc, int id, uint[] internalState, SimChip[] subChips)
 		{
 			SubChips = subChips;
@@ -36,7 +46,7 @@ namespace DLS.Simulation
 			// ---- Create pins (don't allocate unnecessarily as very many sim chips maybe created!) ----
 			if (desc.InputPins.Length > 0)
 			{
-				InputPins = new SimPin [desc.InputPins.Length];
+				InputPins = new SimPin[desc.InputPins.Length];
 				for (int i = 0; i < InputPins.Length; i++)
 				{
 					InputPins[i] = CreateSimPinFromDescription(desc.InputPins[i], true, this);
@@ -45,7 +55,7 @@ namespace DLS.Simulation
 
 			if (desc.OutputPins.Length > 0)
 			{
-				OutputPins = new SimPin [desc.OutputPins.Length];
+				OutputPins = new SimPin[desc.OutputPins.Length];
 				for (int i = 0; i < OutputPins.Length; i++)
 				{
 					OutputPins[i] = CreateSimPinFromDescription(desc.OutputPins[i], false, this);
@@ -85,9 +95,15 @@ namespace DLS.Simulation
 			}
 		}
 
+		/// <summary>
+		/// Updates the internal state of the chip.
+		/// </summary>
+		/// <param name="source">The internal state to be updated from.</param>
 		public void UpdateInternalState(uint[] source) => Array.Copy(source, InternalState, InternalState.Length);
 
-
+		/// <summary>
+		/// Propagates the inputs from chips.
+		/// </summary>
 		public void Sim_PropagateInputs()
 		{
 			int length = InputPins.Length;
@@ -98,6 +114,10 @@ namespace DLS.Simulation
 			}
 		}
 
+
+		/// <summary>
+		/// Propagates the outputs to subsequent chips.
+		/// </summary>
 		public void Sim_PropagateOutputs()
 		{
 			int length = OutputPins.Length;
@@ -110,8 +130,14 @@ namespace DLS.Simulation
 			numInputsReady = 0; // Reset for next frame
 		}
 
+		/// <returns>If the chip is ready.</returns>
 		public bool Sim_IsReady() => numInputsReady == numConnectedInputs;
 		
+		/// <summary>
+		/// Tries to get a <c>SimChip</c>from the address.
+		/// </summary>
+		/// <param name="id">The ID of the subchip.</param>
+		/// <returns>A <c>Boolean</c> whether it is successful or not, and a <c>SimChip</c> or <c>null</c> based on the ID.</returns>
 		public (bool success, SimChip chip) TryGetSubChipFromID(int id)
 		{
 			// Todo: address possible errors if accessing from main thread while being modified on sim thread?
@@ -126,6 +152,12 @@ namespace DLS.Simulation
 			return (false, null);
 		}
 
+		/// <summary>
+		/// Gets a <c>SimChip</c>from the address.
+		/// </summary>
+		/// <param name="id">The ID of the subchip.</param>
+		/// <returns>A <c>SimChip</c> based on the ID.</returns>
+		/// <exception cref="Exception">If it fails to find a chip with this ID.</exception>
 		public SimChip GetSubChipFromID(int id)
 		{
 			(bool success, SimChip chip) = TryGetSubChipFromID(id);
@@ -134,6 +166,12 @@ namespace DLS.Simulation
 			throw new Exception("Failed to find subchip with id " + id);
 		}
 
+		/// <summary>
+		/// Gets a <c>SimPin</c> alongside with a <c>SimChip</c> from the address.
+		/// </summary>
+		/// <param name="address">The address of the pin.</param>
+		/// <returns>A <c>SimPin</c>, and a <c>SimChip</c> based on the address.</returns>
+		/// <exception cref="Exception">If it fails to find a pin with this address.</exception>
 		public (SimPin pin, SimChip chip) GetSimPinFromAddressWithChip(PinAddress address)
 		{
 			foreach (SimChip s in SubChips)
@@ -165,6 +203,12 @@ namespace DLS.Simulation
 			throw new Exception("Failed to find pin with address: " + address.PinID + ", " + address.PinOwnerID);
 		}
 
+		/// <summary>
+		/// Gets a <c>SimPin</c> from the address.
+		/// </summary>
+		/// <param name="address">The address of the pin.</param>
+		/// <returns>A <c>SimPin</c> based on the address.</returns>
+		/// <exception cref="Exception">If it fails to find a pin with this address.</exception>
 		public SimPin GetSimPinFromAddress(PinAddress address)
 		{
 			// Todo: address possible errors if accessing from main thread while being modified on sim thread?
@@ -197,13 +241,22 @@ namespace DLS.Simulation
 			throw new Exception("Failed to find pin with address: " + address.PinID + ", " + address.PinOwnerID);
 		}
 
-
+		/// <summary>
+		/// Removes a subchip from this <c>SimChip</c>.
+		/// </summary>
+		/// <remarks>This does NOT remove a subchip from the actual visual chip. It is only visible in simulation.</remarks>
+		/// <param name="id">The ID of this subchip to be removed.</param>
 		public void RemoveSubChip(int id)
 		{
 			SubChips = SubChips.Where(s => s.ID != id).ToArray();
 		}
 
-
+		/// <summary>
+		/// Adds a pin to the <c>SimChip</c>.
+		/// </summary>
+		/// <remarks>This does NOT add a pin to the actual visual chip. It is only visible in simulation.</remarks>
+		/// <param name="pin">The pin to be added.</param>
+		/// <param name="isInput">If the pin is an input pin (left side of the visual chip).</param>
 		public void AddPin(SimPin pin, bool isInput)
 		{
 			if (isInput)
@@ -218,20 +271,42 @@ namespace DLS.Simulation
 			}
 		}
 
+		/// <summary>
+		/// Creates a <c>SimPin</c> from a <c>PinDescription</c>.
+		/// </summary>
+		/// <param name="desc">The pin description have its ID derived from.</param>
+		/// <param name="isInput">If the pin is an input pin (left side of the visual chip).</param>
+		/// <param name="parent">The parent to have the pin added to.</param>
+		/// <returns>A <c>SimPin</c> created from this <c>PinDescription</c>.</returns>
 		static SimPin CreateSimPinFromDescription(PinDescription desc, bool isInput, SimChip parent) => new(desc.ID, isInput, parent);
 
+		/// <summary>
+		/// Removes a pin from the <c>SimChip</c>.
+		/// </summary>
+		/// <remarks>This does NOT remove a pin from the actual visual chip. It is only visible in simulation.</remarks>
+		/// <param name="pinID">The pin ID for the pin to be removed.</param>
 		public void RemovePin(int removePinID)
 		{
 			InputPins = InputPins.Where(p => p.ID != removePinID).ToArray();
 			OutputPins = OutputPins.Where(p => p.ID != removePinID).ToArray();
 		}
 
+		/// <summary>
+		/// Adds a subchip to this <c>SimChip</c>.
+		/// </summary>
+		/// <param name="subChip">The subchip to be added to this <c>SimChip</c>.</param>
 		public void AddSubChip(SimChip subChip)
 		{
 			Array.Resize(ref SubChips, SubChips.Length + 1);
 			SubChips[^1] = subChip;
 		}
 
+		/// <summary>
+		/// Adds a connection to this <c>SimChip</c>.
+		/// </summary>
+		/// <remarks>This does NOT add a connection to the actual visual chip. It is only visible in simulation.</remarks>
+		/// <param name="sourcePinAddress">The address of the source pin.</param>
+		/// <param name="targetPinAddress">The address of the target pin.</param>
 		public void AddConnection(PinAddress sourcePinAddress, PinAddress targetPinAddress)
 		{
 			try
@@ -252,6 +327,12 @@ namespace DLS.Simulation
 			}
 		}
 
+		/// <summary>
+		/// Removes a connection from this <c>SimChip</c>.
+		/// </summary>
+		/// <remarks>This does NOT remove a connection from the actual visual chip. It is only visible in simulation.</remarks>
+		/// <param name="sourcePinAddress">The address of the source pin.</param>
+		/// <param name="targetPinAddress">The address of the target pin.</param>
 		public void RemoveConnection(PinAddress sourcePinAddress, PinAddress targetPinAddress)
 		{
 			SimPin sourcePin = GetSimPinFromAddress(sourcePinAddress);
