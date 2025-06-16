@@ -210,10 +210,8 @@ namespace DLS.Simulation
 			return nextSubChipIndex;
 		}
 
-		public static void UpdateKeyboardInputFromMainThread()
-		{
+		public static void UpdateKeyboardInputFromMainThread() =>
 			SimKeyboardHelper.RefreshInputState();
-		}
 
 		public static bool RandomBool()
 		{
@@ -520,16 +518,11 @@ namespace DLS.Simulation
 			}
 		}
 
-		public static SimChip BuildSimChip(ChipDescription chipDesc, ChipLibrary library)
-		{
-			return BuildSimChip(chipDesc, library, -1, null);
-		}
+		public static SimChip BuildSimChip(ChipDescription chipDesc, ChipLibrary library) =>
+			BuildSimChip(chipDesc, library, -1, null);
 
-		public static SimChip BuildSimChip(ChipDescription chipDesc, ChipLibrary library, int subChipID, uint[] internalState)
-		{
-			SimChip simChip = BuildSimChipRecursive(chipDesc, library, subChipID, internalState);
-			return simChip;
-		}
+		public static SimChip BuildSimChip(ChipDescription chipDesc, ChipLibrary library, int subChipID, uint[] internalState) =>
+			BuildSimChipRecursive(chipDesc, library, subChipID, internalState);
 
 		// Recursively build full representation of chip from its description for simulation.
 		static SimChip BuildSimChipRecursive(ChipDescription chipDesc, ChipLibrary library, int subChipID, uint[] internalState)
@@ -557,32 +550,25 @@ namespace DLS.Simulation
 			return simChip;
 		}
 
-		public static void AddPin(SimChip simChip, int pinID, bool isInputPin)
-		{
-			SimModifyCommand command = new()
+		public static void AddPin(SimChip simChip, int pinID, bool isInputPin) =>
+			modificationQueue.Enqueue(new()
 			{
 				type = SimModifyCommand.ModificationType.AddPin,
 				modifyTarget = simChip,
 				simPinToAdd = new SimPin(pinID, isInputPin, simChip),
 				pinIsInputPin = isInputPin
-			};
-			modificationQueue.Enqueue(command);
-		}
+			});
 
-		public static void RemovePin(SimChip simChip, int pinID)
-		{
-			SimModifyCommand command = new()
+		public static void RemovePin(SimChip simChip, int pinID) =>
+			modificationQueue.Enqueue(new()
 			{
 				type = SimModifyCommand.ModificationType.RemovePin,
 				modifyTarget = simChip,
 				removePinID = pinID
-			};
-			modificationQueue.Enqueue(command);
-		}
+			});
 
-		public static void AddSubChip(SimChip simChip, ChipDescription desc, ChipLibrary chipLibrary, int subChipID, uint[] subChipInternalData)
-		{
-			SimModifyCommand command = new()
+		public static void AddSubChip(SimChip simChip, ChipDescription desc, ChipLibrary chipLibrary, int subChipID, uint[] subChipInternalData) =>
+			modificationQueue.Enqueue(new()
 			{
 				type = SimModifyCommand.ModificationType.AddSubchip,
 				modifyTarget = simChip,
@@ -590,44 +576,34 @@ namespace DLS.Simulation
 				lib = chipLibrary,
 				subChipID = subChipID,
 				subChipInternalData = subChipInternalData
-			};
-			modificationQueue.Enqueue(command);
-		}
+			});
+		
 
-		public static void AddConnection(SimChip simChip, PinAddress source, PinAddress target)
-		{
-			SimModifyCommand command = new()
+		public static void AddConnection(SimChip simChip, PinAddress source, PinAddress target) =>
+			modificationQueue.Enqueue(new()
 			{
 				type = SimModifyCommand.ModificationType.AddConnection,
 				modifyTarget = simChip,
 				sourcePinAddress = source,
 				targetPinAddress = target
-			};
-			modificationQueue.Enqueue(command);
-		}
+			});
 
-		public static void RemoveConnection(SimChip simChip, PinAddress source, PinAddress target)
-		{
-			SimModifyCommand command = new()
+		public static void RemoveConnection(SimChip simChip, PinAddress source, PinAddress target) =>
+			modificationQueue.Enqueue(new()
 			{
 				type = SimModifyCommand.ModificationType.RemoveConnection,
 				modifyTarget = simChip,
 				sourcePinAddress = source,
 				targetPinAddress = target
-			};
-			modificationQueue.Enqueue(command);
-		}
+			});
 
-		public static void RemoveSubChip(SimChip simChip, int id)
-		{
-			SimModifyCommand command = new()
+		public static void RemoveSubChip(SimChip simChip, int id) =>
+			modificationQueue.Enqueue(new()
 			{
 				type = SimModifyCommand.ModificationType.RemoveSubChip,
 				modifyTarget = simChip,
 				removeSubChipID = id
-			};
-			modificationQueue.Enqueue(command);
-		}
+			});
 
 		// Note: this should only be called from the sim thread
 		public static void ApplyModifications()
