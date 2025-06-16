@@ -10,6 +10,10 @@ namespace DLS.Game
 	{
 		static readonly Color ChipCol_SplitMerge = new(0.1f, 0.1f, 0.1f); //new(0.8f, 0.8f, 0.8f);
 
+		/// <summary>
+		/// Creates an array of builtin chip descriptions.
+		/// </summary>
+		/// <returns>An array of all builtin chip descriptions.</returns>
 		public static ChipDescription[] CreateAllBuiltinChipDescriptions()
 		{
 			return new[]
@@ -159,6 +163,21 @@ namespace DLS.Game
 			return CreateBuiltinChipDescription(ChipType.Pulse, size, col, inputPins, outputPins);
 		}
 
+		/// <summary>
+		/// 	Creates a bit conversion chip with the specified parameters.
+		/// 	<example>
+		/// 		<para/>This shows how to create a bit conversion chip:
+		/// 		<code>
+		/// 	BuiltinChipCreator.CreateBitConversionChip(ChipType.Example, PinBitCount.Bit8, PinBitCount.Bit1, 1, 8)
+		/// 		</code>
+		/// 	</example>
+		/// </summary>
+		/// <param name="chipType">The chip type of the bit conversion chip.</param>
+		/// <param name="bitCountIn">The bitcount of the input(s) (left side of the chip).</param>
+		/// <param name="bitCountOut">The bitcount of the output(s) (right side of the chip).</param>
+		/// <param name="numIn">The number of inputs (left side of the chip).</param>
+		/// <param name="numOut">The number of outputs (right side of the chip).</param>
+		/// <returns>A description of the built conversion chip.</returns>
 		static ChipDescription CreateBitConversionChip(ChipType chipType, PinBitCount bitCountIn, PinBitCount bitCountOut, int numIn, int numOut)
 		{
 			PinDescription[] inputPins = new PinDescription[numIn];
@@ -182,6 +201,13 @@ namespace DLS.Game
 			return CreateBuiltinChipDescription(chipType, size, ChipCol_SplitMerge, inputPins, outputPins);
 		}
 
+		/// <summary>
+		/// Gets the name of the pin (NOT visually), and return it based on the provided parameters.
+		/// </summary>
+		/// <param name="pinIndex">The index of the pin.</param>
+		/// <param name="pinCount">The bit count of the pin.</param>
+		/// <param name="isInput">If the pin is an input or not.</param>
+		/// <returns>The name of the pin for use internally.</returns>
 		static string GetPinName(int pinIndex, int pinCount, bool isInput)
 		{
 			string letter = " " + (char)('A' + pinCount - pinIndex - 1);
@@ -312,6 +338,12 @@ namespace DLS.Game
 			return CreateBuiltinChipDescription(type, Vector2.zero, Color.clear, inputs, outputs);
 		}
 
+		/// <summary>
+		/// Gets the size of the bus chip with a specified parameter.
+		/// </summary>
+		/// <param name="bitCount">The bit count of the pin.</param>
+		/// <returns>The size of the bus chip.</returns>
+		/// <exception cref="Exception">If the bus bit count is not implemented.</exception>
 		static Vector2 BusChipSize(PinBitCount bitCount)
 		{
 			return bitCount switch
@@ -323,6 +355,12 @@ namespace DLS.Game
 			};
 		}
 
+		/// <summary>
+		/// Creates a bus with the specified bit count.
+		/// </summary>
+		/// <param name="bitCount">The bit count of the pins.</param>
+		/// <returns>A description of the bus.</returns>
+		/// <exception cref="Exception">If the bus bit count is not implemented.</exception>
 		static ChipDescription CreateBus(PinBitCount bitCount)
 		{
 			ChipType type = bitCount switch
@@ -371,7 +409,13 @@ namespace DLS.Game
 			return CreateBuiltinChipDescription(ChipType.DisplayLED, size, col, inputPins, null, displays, NameDisplayLocation.Hidden);
 		}
 
-
+		/// <summary>
+		/// Creates a terminating bus with the specified bit count.
+		/// <para/>Terminus stands for "terminating."
+		/// </summary>
+		/// <param name="bitCount">The bit count of the pins.</param>
+		/// <returns>A description of the bus.</returns>
+		/// <exception cref="Exception">If the bus bit count is not implemented.</exception>
 		static ChipDescription CreateBusTerminus(PinBitCount bitCount)
 		{
 			ChipType type = bitCount switch
@@ -388,7 +432,23 @@ namespace DLS.Game
 			return CreateBuiltinChipDescription(type, BusChipSize(bitCount), busOrigin.Colour, inputs, null, null, NameDisplayLocation.Hidden);
 		}
 
-
+		/// <summary>
+		/// 	Creates a builtin chip description with the specified parameters.
+		/// 	<example>
+		/// 		<para/>This shows how to create a builtin chip description:
+		/// 		<code>
+		/// 	BuiltinChipCreator.CreateBuiltinChipDescription(ChipType.Example, new(), Color.red, new[] {}, new [] {})
+		/// 		</code>
+		/// 	</example>
+		/// </summary>
+		/// <param name="type">The unique type of the chip.</param>
+		/// <param name="size">The size of the chip.</param>
+		/// <param name="col">The color of the chip, not considering the color of the outline.</param>
+		/// <param name="inputs">The description of the input pins.</param>
+		/// <param name="outputs">The description of the output pins.</param>
+		/// <param name="displays">Displays in this chip.</param>
+		/// <param name="nameLoc">The location of the name of the chip in the chip.</param>
+		/// <returns>A description of the builtin chip.</returns>
 		static ChipDescription CreateBuiltinChipDescription(ChipType type, Vector2 size, Color col, PinDescription[] inputs, PinDescription[] outputs, DisplayDescription[] displays = null, NameDisplayLocation nameLoc = NameDisplayLocation.Centre)
 		{
 			string name = ChipTypeHelper.GetName(type);
@@ -409,6 +469,13 @@ namespace DLS.Game
 			};
 		}
 
+		/// <summary>
+		/// Creates a pin description.
+		/// </summary>
+		/// <param name="name">The name of the pin.</param>
+		/// <param name="id">The ID of the pin.</param>
+		/// <param name="bitCount">The bit count of the chip.</param>
+		/// <returns>The built pin description.</returns>
 		static PinDescription CreatePinDescription(string name, int id, PinBitCount bitCount = PinBitCount.Bit1) =>
 			new(
 				name,
@@ -419,10 +486,22 @@ namespace DLS.Game
 				PinValueDisplayMode.Off
 			);
 
+		/// <summary>
+		/// Calculates the size of the chip while accounting for the grid.
+		/// </summary>
+		/// <param name="desiredWidth">The desired width.</param>
+		/// <returns>The size in the grid.</returns>
 		static float CalculateGridSnappedWidth(float desiredWidth) =>
 			// Calculate width such that spacing between an input and output pin on chip will align with grid
 			GridHelper.SnapToGridForceEven(desiredWidth) - (ChipOutlineWidth - 2 * SubChipPinInset);
 
+		/// <summary>
+		/// Validates the pin IDs to ensure that there are no conflicting IDs.
+		/// </summary>
+		/// <param name="inputs">The input pins.</param>
+		/// <param name="outputs">The output pins.</param>
+		/// <param name="chipName">The name of the chip.</param>
+		/// <exception cref="Exception">If a pin has a duplicate pin ID.</exception>
 		static void ValidatePinIDs(PinDescription[] inputs, PinDescription[] outputs, string chipName)
 		{
 			HashSet<int> pinIDs = new();

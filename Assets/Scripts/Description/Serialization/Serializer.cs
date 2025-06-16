@@ -9,7 +9,18 @@ namespace DLS.Description
 {
 	public static class Serializer
 	{
+		/// <summary>
+		/// Serializes the settings of DLS.
+		/// </summary>
+		/// <param name="settings">The settings to be serialized.</param>
+		/// <returns>A JSON format of the serialized app settings..</returns>
 		public static string SerializeAppSettings(AppSettings settings) => Serialize(settings);
+
+		/// <summary>
+		/// Serializes the chip description.
+		/// </summary>
+		/// <param name="description">The chip description to be serialized.</param>
+		/// <returns>A JSON format of the serialized chip description.</returns>
 		public static string SerializeChipDescription(ChipDescription description) => Serialize(description);
 		public static string SerializeProjectDescription(ProjectDescription description) => Serialize(description);
 
