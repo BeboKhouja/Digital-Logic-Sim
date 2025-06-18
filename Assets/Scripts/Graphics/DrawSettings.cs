@@ -185,8 +185,8 @@ namespace DLS.Graphics
 				},
 				CheckBoxTheme = new CheckboxTheme
 				{
-					boxCol = Color.white,
-					tickCol = Color.black
+					boxCol = Color.gray,
+					tickCol = Color.white
 				},
 				InfoBarCol = new Color(0, 0, 0, 0.9f),
 				StarredBarCol = MakeCol(29 / 255f)

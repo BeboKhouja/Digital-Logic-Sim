@@ -38,6 +38,12 @@ namespace Seb.Vis.UI
 		}
 	}
 
+	public class ToggleState
+	{
+		internal Action setCheckFunc;
+		public bool Checked;
+		public static bool operator !(ToggleState toggleState) => !toggleState.Checked;
+	}
 
 	public class ButtonState
 	{

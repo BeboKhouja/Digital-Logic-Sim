@@ -29,7 +29,7 @@ namespace DLS.Game
 		public ProjectDescription description;
 
 		// ---- Display state ----
-		public bool ShowGrid => description.Prefs_GridDisplayMode == 1;
+		public bool ShowGrid => description.Prefs_GridDisplayMode;
 		public bool PinNameDisplayIsTabToggledOn;
 
 		// ---- Chip view / edit state ----
@@ -466,7 +466,7 @@ namespace DLS.Game
 						}
 					}
 
-					Saver.SaveChip(updatedDesc, this.description.ProjectName);
+					Saver.SaveChip(updatedDesc, description.ProjectName);
 					chipLibrary.NotifyChipSaved(updatedDesc);
 				}
 			}
@@ -475,7 +475,7 @@ namespace DLS.Game
 
 		public void ToggleGridDisplay()
 		{
-			description.Prefs_GridDisplayMode = 1 - description.Prefs_GridDisplayMode;
+			description.Prefs_GridDisplayMode = !description.Prefs_GridDisplayMode;
 		}
 
 		public bool ShouldSnapToGrid => KeyboardShortcuts.SnapModeHeld || (description.Prefs_Snapping == 1 && ShowGrid) || description.Prefs_Snapping == 2;

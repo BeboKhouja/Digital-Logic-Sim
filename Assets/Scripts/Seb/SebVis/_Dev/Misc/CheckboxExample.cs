@@ -24,7 +24,7 @@ namespace Seb.Vis.UI.Examples
 			UIThemeCLASS theme = themeSelector.ActiveTheme;
 
 			UIHandle id = new("toggletest");
-			UI.DrawToggle(id, pos, size, theme.checkboxTheme, anchor);
+			UI.Toggle(id, pos, size, theme.checkboxTheme, anchor);
 		}
 	}
 }

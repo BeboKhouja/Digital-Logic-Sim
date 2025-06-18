@@ -25,11 +25,6 @@ namespace DLS.Graphics
 			"Tab to Toggle",
 		};
 
-		static readonly string[] GridDisplayOptions =
-		{
-			"Off",
-			"On"
-		};
 
 		static readonly string[] SnappingOptions =
 		{
@@ -98,10 +93,16 @@ namespace DLS.Graphics
 				DrawHeader("DISPLAY:");
 				int mainPinNamesMode = DrawNextWheel("Show I/O pin names", PinDisplayOptions, ID_MainPinNames);
 				int chipPinNamesMode = DrawNextWheel("Show chip pin names", PinDisplayOptions, ID_ChipPinNames);
-				int gridDisplayMode = DrawNextWheel(showGridLabel, GridDisplayOptions, ID_GridDisplay);
+				Vector2 gridDisplayLabelRight = MenuHelper.DrawLabelSectionOfLabelInputPair(labelPosCurr, entrySize, showGridLabel, labelCol, true);
+				UI.DrawPanel(gridDisplayLabelRight, settingFieldSize, new Color(0.18f, 0.18f, 0.18f), Anchor.CentreRight);
+				bool gridDisplayMode = UI.Toggle(ID_GridDisplay, gridDisplayLabelRight + Vector2.left * 1.5f, 3f, DrawSettings.ActiveUITheme.CheckBoxTheme).Checked;
+				AddSpacing();
 				DrawHeader("EDITING:");
 				int snappingMode = DrawNextWheel("Snap to grid", SnappingOptions, ID_Snapping);
 				int straightWireMode = DrawNextWheel("Straight wires", StraightWireOptions, ID_StraightWires);
+
+				AddSpacing();
+				UI.ToggleWithText(new("AKAKSK"), new(50, 50), 2, "halllo", FontType.JetbrainsMonoRegular, new(1,1,1), DrawSettings.ActiveUITheme.CheckBoxTheme);
 
 				DrawHeader("SIMULATION:");
 				bool pauseSim = MenuHelper.LabeledOptionsWheel(simStatusLabel, labelCol, labelPosCurr, entrySize, ID_SimStatus, SimulationStatusOptions, settingFieldSize.x, true) == 1;
@@ -203,7 +204,7 @@ namespace DLS.Graphics
 			// -- Wheels
 			UI.GetWheelSelectorState(ID_MainPinNames).index = projDesc.Prefs_MainPinNamesDisplayMode;
 			UI.GetWheelSelectorState(ID_ChipPinNames).index = projDesc.Prefs_ChipPinNamesDisplayMode;
-			UI.GetWheelSelectorState(ID_GridDisplay).index = projDesc.Prefs_GridDisplayMode;
+			UI.GetToggleState(ID_GridDisplay).Checked = projDesc.Prefs_GridDisplayMode;
 			UI.GetWheelSelectorState(ID_Snapping).index = projDesc.Prefs_Snapping;
 			UI.GetWheelSelectorState(ID_StraightWires).index = projDesc.Prefs_StraightWires;
 			UI.GetWheelSelectorState(ID_SimStatus).index = projDesc.Prefs_SimPaused ? 1 : 0;

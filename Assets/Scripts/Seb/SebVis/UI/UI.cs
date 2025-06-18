@@ -30,7 +30,7 @@ namespace Seb.Vis.UI
 		static readonly Dictionary<UIHandle, ColourPickerState> colPickerStates = new();
 		static readonly Dictionary<UIHandle, ScrollBarState> scrollbarStates = new();
 		static readonly Dictionary<UIHandle, WheelSelectorState> wheelSelectorStates = new();
-		static readonly Dictionary<UIHandle, bool> checkBoxStates = new();
+		static readonly Dictionary<UIHandle, ToggleState> checkBoxStates = new();
 
 
 		// Scroll draw state
@@ -889,38 +889,45 @@ namespace Seb.Vis.UI
 			return state;
 		}
 
-		public static void DrawToggle(UIHandle id, Vector2 pos, float size, CheckboxTheme theme, Anchor anchor = Anchor.Centre)
+		public static ToggleState Toggle(UIHandle id, Vector2 pos, float size, CheckboxTheme theme, Anchor anchor = Anchor.Centre)
 		{
 			Vector2 boxSize = Vector2.one * size;
 			Vector2 centre = CalculateCentre(pos, boxSize, anchor);
+			ToggleState state = GetToggleState(id);
 
 			if (IsRendering)
 			{
-				bool state = GetOrCreateState(id, checkBoxStates);
 				(Vector2 centre, Vector2 size) ss = UIToScreenSpace(centre, boxSize);
 
 				if (InputHelper.MouseInBounds_ScreenSpace(ss.centre, ss.size))
 				{
 					if (InputHelper.IsMouseDownThisFrame(MouseButton.Left))
 					{
-						state = !state;
+						state.Checked = !state;
 						checkBoxStates[id] = state;
 					}
 				}
 
 				DrawPanel(centre, boxSize, Color.red);
-				DrawPanel(centre, Vector2.one * boxSize, Color.white);
+				DrawPanel(centre, Vector2.one * boxSize, theme.boxCol);
 
-				if (!state)
+				if (state.Checked)
 				{
 					float thickness = ss.size.y / 15;
-					float crossScale = ss.size.y * 0.3f;
-					Draw.Line(ss.centre - Vector2.one * crossScale, ss.centre + Vector2.one * crossScale, thickness, theme.tickCol);
-					Draw.Line(ss.centre + new Vector2(1, -1) * crossScale, ss.centre + new Vector2(-1, 1) * crossScale, thickness, theme.tickCol);
+					Vector2 middlePoint = ss.centre + Vector2.left * 3 + Vector2.down * size * 1.7f;
+					Draw.Line(ss.centre + Vector2.left * size * 2.5f, middlePoint, thickness, theme.tickCol);
+					Draw.Line(middlePoint, ss.centre + Vector2.up * size * 1.5f + Vector2.right * size * 2.5f, thickness, theme.tickCol);
 				}
 			}
 
 			OnFinishedDrawingUIElement(centre, boxSize);
+			return state;
+		}
+
+		public static ToggleState ToggleWithText(UIHandle id, Vector2 pos, float size, string text, FontType font, Color textColor, CheckboxTheme theme, bool placeTextOnRightOfCheckbox = true)
+		{
+			DrawText(text, font, size, pos + (placeTextOnRightOfCheckbox ? Vector2.right : Vector2.left) * 1.75f, placeTextOnRightOfCheckbox ? Anchor.CentreLeft : Anchor.CentreRight, textColor);
+			return Toggle(id, pos, size, theme);
 		}
 
 		// Box that displays one of multiple supplied string values. Buttons on either side allow for moving between the options.
@@ -1120,6 +1127,7 @@ namespace Seb.Vis.UI
 		public static InputFieldState GetInputFieldState(UIHandle id) => GetOrCreateState(id, inputFieldStates);
 
 		public static ButtonState GetButtonState(UIHandle id) => GetOrCreateState(id, buttonStates);
+		public static ToggleState GetToggleState(UIHandle id) => GetOrCreateState(id, checkBoxStates);
 
 		public static ScrollBarState GetScrollbarState(UIHandle id) => GetOrCreateState(id, scrollbarStates);
 
