@@ -49,7 +49,8 @@ namespace DLS.Game
 				// ---- Clock ----
 				CreateSPSChip(),
 				// ---- Time ----
-				CreateRTC()
+				CreateRTC(),
+				CreateProgramDisplay(),
 			}
 			.Concat(CreateInOutPins(description.pinBitCounts))
 			.Concat(CreateSplitMergePins(description.SplitMergePairs))
@@ -223,6 +224,25 @@ namespace DLS.Game
 			Vector2 size = new(CalculateGridSnappedWidth(GridSize * 9), height);
 
 			return CreateBuiltinChipDescription(ChipType.RTC, size, col, null, outputPins);
+		}
+
+		static ChipDescription CreateProgramDisplay()
+		{
+			Color col = GetColor(new(0.65f, 0.65f, 0.5f));
+
+			PinDescription[] inputPins =
+			{
+				CreatePinDescription("X", 0, PinBitCount.Bit16),
+				CreatePinDescription("Y", 1, PinBitCount.Bit16),
+			};
+			PinDescription[] outputPins = {
+				CreatePinDescription("RED", 2, PinBitCount.Bit4),
+				CreatePinDescription("GREEN", 3, PinBitCount.Bit4),
+				CreatePinDescription("BLUE", 4, PinBitCount.Bit4),
+			};
+			Vector2 size = new(GridSize * 10, SubChipInstance.MinChipHeightForPins(inputPins, outputPins));
+
+			return CreateBuiltinChipDescription(ChipType.ProgramDisplay, size, col, inputPins, outputPins);
 		}
 
 		static ChipDescription dev_CreateRAM_8()

@@ -80,6 +80,8 @@ namespace DLS.SaveSystem
 			);
 		}
 
+		public const ushort WindowTitleLength = 48; 
+
 		public static uint[] CreateDefaultInstanceData(ChipType type)
 		{
 			return type switch
@@ -88,6 +90,7 @@ namespace DLS.SaveSystem
 				ChipType.EEPROM_256x16 => new uint[257], // EEPROM contents + Rising-Edge detection
 				ChipType.Key => new uint[] { 'K' }, // Key binding
 				ChipType.Pulse => new uint[] { 50, 0, 0 }, // Pulse width, ticks remaining, input state old
+				ChipType.ProgramDisplay => new uint[WindowTitleLength], // Window title
 				ChipType.DisplayLED => new uint[] { 0 }, // LED colour
 				ChipType.Button => new uint[] { 0 }, // Button colour
 				ChipType.Toggle => new uint[] { 0 }, // Toggle State 

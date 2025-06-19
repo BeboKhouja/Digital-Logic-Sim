@@ -78,13 +78,20 @@ namespace DLS.Graphics
 			labelChipEntry,
 			deleteEntry
 		};
+		
+		static readonly MenuEntry[] entries_builtinPDisplayChip =
+		{
+			new(Format("EDIT"), OpenPDisplayEditMenu, CanEditCurrentChip),
+			labelChipEntry,
+			deleteEntry
+		};
 
         static readonly MenuEntry[] entries_builtinConstantChip =
 {
-            new(Format("EDIT"), OpenConstantEditMenu, CanEditCurrentChip),
-            labelChipEntry,
-            deleteEntry
-        };
+			new(Format("EDIT"), OpenConstantEditMenu, CanEditCurrentChip),
+			labelChipEntry,
+			deleteEntry
+		};
 
 
 
@@ -192,6 +199,7 @@ namespace DLS.Graphics
 							if (subChip.ChipType is ChipType.Key) activeContextMenuEntries = entries_builtinKeySubchip;
 							else if (ChipTypeHelper.IsRomType(subChip.ChipType)) activeContextMenuEntries = entries_builtinRomSubchip;
 							else if (subChip.ChipType is ChipType.Pulse) activeContextMenuEntries = entries_builtinPulseChip;
+							else if (subChip.ChipType is ChipType.ProgramDisplay) activeContextMenuEntries = entries_builtinPDisplayChip;
 							else if (ChipTypeHelper.IsBusType(subChip.ChipType)) activeContextMenuEntries = entries_builtinBus;
 							else if (subChip.ChipType == ChipType.DisplayLED) activeContextMenuEntries = entries_builtinLED;
 							else if (subChip.ChipType == ChipType.Button) activeContextMenuEntries = entries_builtinButton;
@@ -424,6 +432,8 @@ namespace DLS.Graphics
 
 		static void OpenPulseEditMenu() => UIDrawer.SetActiveMenu(UIDrawer.MenuType.PulseEdit);
 
+		static void OpenPDisplayEditMenu() => UIDrawer.SetActiveMenu(UIDrawer.MenuType.ProgramDisplay);
+	
 		static void OpenConstantEditMenu() => UIDrawer.SetActiveMenu(UIDrawer.MenuType.ConstantEdit);
 
 		static bool CanEditCurrentChip() => Project.ActiveProject.CanEditViewedChip;

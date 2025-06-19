@@ -33,6 +33,8 @@ namespace DLS.Description
 			{ ChipType.SPS, "SPS" },
 			{ ChipType.RTC, "RTC" },
 
+			{ ChipType.ProgramDisplay, "PROGRAM DISPLAY" },
+
 			// ---- Not really chips (but convenient to treat them as such anyway) ----
 
 			// ---- Inputs/Outputs ----
@@ -90,7 +92,7 @@ namespace DLS.Description
 		}
 
 		public static bool IsInternalDataModifiable(ChipType type) {
-			return type == ChipType.EEPROM_256x16 || type == ChipType.Toggle;
+			return type == ChipType.EEPROM_256x16 || type == ChipType.Toggle || type == ChipType.ProgramDisplay;
 		}
 
 		public static bool IsMergeSplitChip(ChipType chipType)

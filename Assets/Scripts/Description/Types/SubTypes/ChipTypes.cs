@@ -30,17 +30,17 @@ namespace DLS.Description
 		In_Pin,
 		Out_Pin,
 
-        Key,
+		Key,
 
 		Button,
 		Toggle,
 
 		Constant_8Bit,
 
-        // ---- Buses ----
-        Bus,
+		// ---- Buses ----
+		Bus,
 		BusTerminus,
-		
+
 		// ---- Audio ----
 		Buzzer,
 
@@ -49,5 +49,7 @@ namespace DLS.Description
 
 		// ---- Clock ----
 		SPS,
+
+		ProgramDisplay
 	}
 }

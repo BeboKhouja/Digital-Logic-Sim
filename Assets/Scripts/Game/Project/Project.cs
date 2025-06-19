@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -8,6 +9,7 @@ using DLS.Graphics;
 using DLS.SaveSystem;
 using DLS.Simulation;
 using Seb.Helpers;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Windows;
 using Debug = UnityEngine.Debug;
@@ -294,6 +296,14 @@ namespace DLS.Game
 			SimChip simChip = rootSimChip.GetSubChipFromID(chip.ID);
 			simChip.InternalState[0] = widthNew;
 			chip.InternalData[0] = widthNew;
+		}
+
+		// Chip's window title has been changed, so simulation must be updated
+		public void NotifyPDisplayChanged(SubChipInstance chip, string title)
+		{
+			SimChip simChip = rootSimChip.GetSubChipFromID(chip.ID);
+			chip.UpdateInternalData(Array.ConvertAll(title.ToCharArray(), e => (uint)e));
+			simChip.UpdateInternalState(chip.InternalData);
 		}
 
 		// Rom has been edited, so simulation must be updated

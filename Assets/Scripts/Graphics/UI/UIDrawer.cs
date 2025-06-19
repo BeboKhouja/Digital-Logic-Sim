@@ -22,6 +22,7 @@ namespace DLS.Graphics
 			CollectionStats,
 			ProjectStats,
 			PulseEdit,
+			ProgramDisplay,
             ConstantEdit,
             UnsavedChanges,
 			Search,
@@ -77,7 +78,8 @@ namespace DLS.Graphics
 			else if (menuToDraw == MenuType.Search) SearchPopup.DrawMenu();
 			else if (menuToDraw == MenuType.ChipLabelPopup) ChipLabelMenu.DrawMenu();
 			else if (menuToDraw == MenuType.PulseEdit) PulseEditMenu.DrawMenu();
-			else if (menuToDraw == MenuType.ConstantEdit)  ConstantEditMenu.DrawMenu();
+			else if (menuToDraw == MenuType.ProgramDisplay) PDisplayEditMenu.DrawMenu();
+			else if (menuToDraw == MenuType.ConstantEdit) ConstantEditMenu.DrawMenu();
 			else if (menuToDraw == MenuType.SpecialChipMaker) SpecialChipMakerMenu.DrawMenu();
 			else
 			{
@@ -109,6 +111,7 @@ namespace DLS.Graphics
 				else if (ActiveMenu == MenuType.Search) SearchPopup.OnMenuOpened();
 				else if (ActiveMenu == MenuType.ChipLabelPopup) ChipLabelMenu.OnMenuOpened();
 				else if (ActiveMenu == MenuType.PulseEdit) PulseEditMenu.OnMenuOpened();
+				else if (ActiveMenu == MenuType.ProgramDisplay) PDisplayEditMenu.OnMenuOpened();
                 else if (ActiveMenu == MenuType.ConstantEdit) ConstantEditMenu.OnMenuOpened();
 				else if (ActiveMenu == MenuType.SpecialChipMaker) SpecialChipMakerMenu.OnMenuOpened();
 
